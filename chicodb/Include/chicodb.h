@@ -2,7 +2,11 @@
 #define CHICODB_H
 
 #include <string>
-#include "Database.h"
+#include "database.h"
+
+namespace chicodb {
+
+
 
 class ChicoDB
 {
@@ -11,6 +15,8 @@ public:
 
 
     static Database createEmptyDB(std::string& dbName);
+    static Database loadDB(std::string& dbName);
 };
 
+}
 #endif // CHICODB_H

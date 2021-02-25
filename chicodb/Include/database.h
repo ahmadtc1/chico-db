@@ -3,6 +3,10 @@
 
 #include <string>
 
+namespace chicodb {
+
+
+
 class Database
 {
 public:
@@ -15,6 +19,7 @@ public:
 
     // management functions
     static Database createEmpty(std::string dbName);
+    static Database loadDB(std::string dbName);
     void destroy();
 
 protected:
@@ -22,5 +27,7 @@ protected:
     std::string m_fullPath;
     //TODO std::pointer<DataBaseImpl> pImpl;
 };
+
+}
 
 #endif // Database_H

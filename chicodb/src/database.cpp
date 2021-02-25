@@ -5,6 +5,8 @@
 
 namespace fs = std::experimental::filesystem;
 
+using namespace chicodb;
+
 Database::Database(std::string dbName, std::string fullPath)
 {
     m_name = dbName;
@@ -15,6 +17,13 @@ Database::Database(std::string dbName, std::string fullPath)
 std::string Database::getDirectory()
 {
     return m_fullPath;
+}
+
+Database Database::loadDB(std::string dbName)
+{
+    std::string baseDir = ".chicodb";
+    std::string dbFolder = baseDir + "/" + dbName;
+    return Database(dbName, dbFolder);
 }
 
 void Database::destroy()
