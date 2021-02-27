@@ -5,27 +5,21 @@
 
 namespace chicodb {
 
-
-
-class Database
+// purely being used as an interface for EmbeddedDatabase
+class IDatabase
 {
 public:
-    Database(std::string dbName, std::string fullPath);
+    IDatabase() = default;
+    virtual ~IDatabase() = 0;
+    virtual std::string getDirectory(void) = 0;
 
-    std::string getDirectory(void);
-
-    void setKeyValue(std::string key, std::string value);
-    std::string getKeyValue(std::string key);
+    virtual void setKeyValue(std::string key, std::string value) = 0;
+    virtual std::string getKeyValue(std::string key) = 0;
 
     // management functions
-    static Database createEmpty(std::string dbName);
-    static Database loadDB(std::string dbName);
-    void destroy();
-
-protected:
-    std::string m_name;
-    std::string m_fullPath;
-    //TODO std::pointer<DataBaseImpl> pImpl;
+    static const std::unique_ptr<IDatabase> createEmpty(std::string dbName);
+    static const std::unique_ptr<IDatabase> loadDB(std::string dbName);
+    virtual void destroy() = 0;
 };
 
 }

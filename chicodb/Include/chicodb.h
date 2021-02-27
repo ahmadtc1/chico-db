@@ -1,6 +1,9 @@
 #ifndef CHICODB_H
 #define CHICODB_H
 
+// WARNING : this should ONLY include Client API files
+// eg. nothing with extensions!
+
 #include <string>
 #include "database.h"
 
@@ -14,8 +17,8 @@ public:
     ChicoDB();
 
 
-    static Database createEmptyDB(std::string& dbName);
-    static Database loadDB(std::string& dbName);
+    static std::unique_ptr<IDatabase> createEmptyDB(std::string& dbName);
+    static std::unique_ptr<IDatabase> loadDB(std::string& dbName);
 };
 
 }

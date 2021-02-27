@@ -1,17 +1,19 @@
 #include "chicodb.h"
+#include "extensions/extdatabase.h"
 
 using namespace chicodb;
+using namespace chicodbext;
 
 ChicoDB::ChicoDB()
 {
 }
 
-Database ChicoDB::createEmptyDB(std::string &dbName)
+std::unique_ptr<IDatabase> ChicoDB::createEmptyDB(std::string &dbName)
 {
-    return Database::createEmpty(dbName);
+    return EmbeddedDatabase::createEmpty(dbName);
 }
 
-Database ChicoDB::loadDB(std::string &dbName)
+std::unique_ptr<IDatabase> ChicoDB::loadDB(std::string &dbName)
 {
-    return Database::loadDB(dbName);
+    return EmbeddedDatabase::loadDB(dbName);
 }

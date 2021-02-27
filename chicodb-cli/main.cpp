@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
         // create the database
         std::string dbName = result["n"].as<std::string>();
-        Database db(ChicoDB::createEmptyDB(dbName));
+        std::unique_ptr<chicodb::IDatabase> db(ChicoDB::createEmptyDB(dbName));
         return 0;
     }
 
@@ -52,8 +52,8 @@ int main(int argc, char* argv[])
 
         // destroy the database
         std::string dbName = result["n"].as<std::string>();
-        Database db(ChicoDB::loadDB(dbName));
-        db.destroy();
+        std::unique_ptr<chicodb::IDatabase> db(ChicoDB::loadDB(dbName));
+        db -> destroy();
         return 0;
     }
 
@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
         std::string dbName = result["n"].as<std::string>();
         std::string key = result["k"].as<std::string>();
         std::string value = result["v"].as<std::string>();
-        Database db(ChicoDB::loadDB(dbName));
-        db.setKeyValue(key, value);
+        std::unique_ptr<chicodb::IDatabase> db(ChicoDB::loadDB(dbName));
+        db -> setKeyValue(key, value);
         return 0;
     }
 
@@ -108,8 +108,8 @@ int main(int argc, char* argv[])
 
         std::string dbName = result["n"].as<std::string>();
         std::string key = result["k"].as<std::string>();
-        Database db(ChicoDB::loadDB(dbName));
-        std::cout << db.getKeyValue(key);
+        std::unique_ptr<chicodb::IDatabase> db(ChicoDB::loadDB(dbName));
+        std::cout << db -> getKeyValue(key);
         return 0;
     }
 

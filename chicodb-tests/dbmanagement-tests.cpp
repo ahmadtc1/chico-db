@@ -16,7 +16,7 @@ TEST_CASE("Create a new, empty Database", "[createEmptyDB]")
     SECTION("Default settings")
     {
         std::string dbName = "myEmptyDB";
-        chicodb::Database db(chicodb::ChicoDB::createEmptyDB(dbName));
+        std::unique_ptr<chicodb::IDatabase> db(chicodb::ChicoDB::createEmptyDB(dbName));
 
         /*
          *  We're successful when we:
@@ -29,7 +29,7 @@ TEST_CASE("Create a new, empty Database", "[createEmptyDB]")
         //const auto& p = fs::directory_iterator(db.getDirectory()); // ensure Database is empty
         //REQUIRE((p == end(p)));
 
-        db.destroy();
+        db -> destroy();
 
         //REQUIRE(!fs.exists(fs.status(db.getDirectory())));
     }
@@ -40,16 +40,16 @@ TEST_CASE("Load an existing database", "[loadDB]")
     SECTION("Default Settings")
     {
         std::string dbName = "chicoDB";
-        chicodb::Database db(chicodb:ChicoDB::createEmptyDB(dbName));
+        std::unique_ptr<chicodb::IDatabase> db(chicodb:ChicoDB::createEmptyDB(dbName));
 
-        chicodb::Database db2(chicodb::ChicoDB::loadDB(dbName));
+        std::unique_ptr<chicodb::IDatabase> db2(chicodb::ChicoDB::loadDB(dbName));
 
-        //REQUIRE(fs::is_directory(fs::status(db2.getDirectory())));
+        //REQUIRE(fs::is_directory(fs::status(db2 -> getDirectory())));
 
-        //const auto& p = fs::directory_iterator(db2.getDirectory());
+        //const auto& p = fs::directory_iterator(db2 -> getDirectory());
         //REQUIRE(p == end(p));
 
-        db2.destroy();
-        //REQUIRE(!fs::exists(fs::status(db2.getDirectory*(()))));
+        db2 -> destroy();
+        //REQUIRE(!fs::exists(fs::status(db2 -> getDirectory*(()))));
     }
 }
