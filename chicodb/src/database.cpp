@@ -3,6 +3,7 @@
 #include <experimental/filesystem>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 
 namespace fs = std::experimental::filesystem;
 
@@ -30,17 +31,48 @@ public:
 private:
     std::string m_name;
     std::string m_fullPath;
+    std::unordered_map<std::string, std::string> m_keyValueStore;
 };
 
 EmbeddedDatabase::Impl::Impl(std::string dbName, std::string fullPath)
 {
     m_name = dbName;
     m_fullPath = fullPath;
+
+    for (auto& p : fs::directory_iterator(getDirectory()))
+    {
+        if (p.exists() && p.is_regular_file())
+        {
+            // If it's a kv file
+            if (p.path().extension() == ".kv")
+            {
+                // Open the file and grab the value
+                std::string keyWithString = p.path().filename();
+                // ASSUMING always ends with _string.kv
+                std::string key = keyWithString.substr(0, keyWithString.length() - 10);
+
+                std::ifstream ifs(p.path());
+                std::string value;
+
+                ifs.seekg(0, std::ios::end);
+                value.reserve(t.tellg());
+                t.seekg(0, std::ios::beg);
+
+                value.assign((std::ifstreambuf_iterator<char>(t)),
+                             std::ifstreambuf_iterator<char>());
+
+                m_keyValueStore.insert({key, value});
+            }
+        }
+    }
+
+    // load all keys from disc to our map here
+    // load any files with .kv in them
 }
 
 EmbeddedDatabase::Impl::~Impl()
 {
-
+    // [Optional] flush the latest known state to disk
 }
 
 // Management Functions
@@ -74,6 +106,8 @@ void EmbeddedDatabase::Impl::destroy()
     {
         fs::remove_all(m_fullPath);
     }
+
+    m_keyValueStore.clear();
 }
 
 
@@ -83,8 +117,27 @@ std::string EmbeddedDatabase::Impl::getDirectory()
     return m_fullPath;
 }
 
+void EmbeddedDatabase::Impl::setKeyValue(std::string key, std::string value)
+{
+    std::ofstream os;
+    os.open(m_fullPath + "/" + key + "_string.kv:", std::ios::out | std::ios::trunc);
+    os << value;
+    os.close();
+
+    m_keyValueStore.insert({key, value});
+}
+
 std::string EmbeddedDatabase::Impl::getKeyValue(std::string key)
 {
+    // Change to only ever read from our in-memory map for improved performance
+    const auto& val = m_keyValueStore.find(key);
+    if (val == m_keyValueStore.end())
+    {
+        return ""; // value not found. TODO: add error handling
+    }
+    return val->second;
+
+    /*
     std::ifstream ifs(m_fullPath + "/" + key + "_string.kv");
     std::string value;
 
@@ -96,16 +149,8 @@ std::string EmbeddedDatabase::Impl::getKeyValue(std::string key)
                  std::ifstreambuf_iterator<char>());
 
     return value;
+    */
 }
-
-void EmbeddedDatabase::Impl::setKeyValue(std::string key, std::string value)
-{
-    std::ofstream os;
-    os.open(m_fullPath + "/" + key + "_string.kv:", std::ios::out | std::ios::trunc);
-    os << value;
-    os.close();
-}
-
 
 // Embedded Database
 
