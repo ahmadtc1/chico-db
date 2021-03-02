@@ -16,6 +16,7 @@ TEST_CASE("Create a new, empty Database", "[createEmptyDB]")
     SECTION("Default settings")
     {
         std::string dbName = "myEmptyDB";
+        std::cout << "creating db" << std::endl;
         std::unique_ptr<chicodb::IDatabase> db(chicodb::ChicoDB::createEmptyDB(dbName));
 
         /*
@@ -23,14 +24,17 @@ TEST_CASE("Create a new, empty Database", "[createEmptyDB]")
          *  1 - return a valid Database reference
          *  2 - The DB has a folder existing on the filesystem
         */
-
+        std::cout << "Checking db directory" << std::endl;
         //REQUIRE((fs::is_directory(fs::status(db.getDirectory()))));
 
+        std::cout << "iterating over db directory" << std::endl;
         //const auto& p = fs::directory_iterator(db.getDirectory()); // ensure Database is empty
         //REQUIRE((p == end(p)));
 
+        std::cout << "destroying db" << std::endl;
         db -> destroy();
 
+        std::cout << "checking destroyed db directory" << std::endl;
         //REQUIRE(!fs.exists(fs.status(db.getDirectory())));
     }
 }
@@ -40,7 +44,7 @@ TEST_CASE("Load an existing database", "[loadDB]")
     SECTION("Default Settings")
     {
         std::string dbName = "chicoDB";
-        std::unique_ptr<chicodb::IDatabase> db(chicodb:ChicoDB::createEmptyDB(dbName));
+        std::unique_ptr<chicodb::IDatabase> db(chicodb::ChicoDB::createEmptyDB(dbName));
 
         std::unique_ptr<chicodb::IDatabase> db2(chicodb::ChicoDB::loadDB(dbName));
 

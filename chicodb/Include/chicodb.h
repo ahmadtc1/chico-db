@@ -18,6 +18,7 @@ public:
 
 
     static std::unique_ptr<IDatabase> createEmptyDB(std::string& dbName);
+    static std::unique_ptr<IDatabase> createEmptyDB(std::string& dbName, std::unique_ptr<KeyValueStore>& kvStore);
     static std::unique_ptr<IDatabase> loadDB(std::string& dbName);
 };
 
